@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Boutique en ligne - TechStore</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.4/css/bulma.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-color: #3273dc;
+            --secondary-color: #00d1b2;
+            --success-color: #48c774;
+        }
+        
+        .navbar {
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        .hero.is-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        
+        .product-card {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            height: 80%;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0,0,0,0.15);
+        }
+        
+        .product-image {
+            height: 150px;
+            width: 100%;
+            object-fit: cover;
+            border-radius: 8px 8px 0 0;
+            overflow: hidden;
+        }
+        
+        .product-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .card-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .card-footer {
+            margin-top: auto;
+        }
+        
+        .price {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+        
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: var(--success-color);
+            color: white;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            font-weight: bold;
+        }
+        
+        .cart-item {
+            border-bottom: 1px solid #eee;
+            padding: 1rem 0;
+        }
+        
+        .cart-item:last-child {
+            border-bottom: none;
+        }
+        
+        .section-title {
+            margin-bottom: 2rem;
+        }
+        
+        .filter-tags {
+            margin-bottom: 2rem;
+        }
+        
+        .modal-card {
+            max-width: 600px;
+        }
+        
+        .checkout-form {
+            max-width: 600px;
+            margin: 0 auto;
+        }
+        
+        .summary-box {
+            background: #f5f5f5;
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+        
+        .total-price {
+            font-size: 1.75rem;
+            font-weight: bold;
+            color: var(--success-color);
+        }
+    </style>
+</head>
+<body>
+    
+    <nav class="navbar is-fixed-top" role="navigation" aria-label="main navigation">
+        <div class="container">
+            <div class="navbar-brand">
+                <a class="navbar-item" href="index.html">
+                    <strong>TechStore</strong>
+                </a>
+                <a role="button" class="navbar-burger" aria-label="menu" aria-expanded="false" data-target="navbarMenu">
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                    <span aria-hidden="true"></span>
+                </a>
+            </div>
+            <div id="navbarMenu" class="navbar-menu">
+                <div class="navbar-start">
+                    <a class="navbar-item" href="index.html">
+                        <span class="icon">
+                            <i class="fas fa-home"></i>
+                        </span>
+                        <span>Accueil</span>
+                    </a>
+                    <a class="navbar-item" href="#products">
+                        Produits
+                    </a>
+                    <a class="navbar-item" href="#about">
+                        À propos
+                    </a>
+                </div>
+                <div class="navbar-end">
+                    <div class="navbar-item">
+                        <div class="buttons">
+                            <a class="button is-primary" id="cartButton">
+                                <span class="icon">
+                                    <i class="fas fa-shopping-cart"></i>
+                                </span>
+                                <span>Panier</span>
+                                <span class="cart-badge" id="cartBadge" style="display: none;">0</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    
+    <section class="hero is-primary is-medium">
+        <div class="hero-body">
+            <div class="container has-text-centered">
+                <h1 class="title is-1">
+                    Bienvenue chez TechStore
+                </h1>
+                <h2 class="subtitle is-4">
+                    Votre destination pour les meilleurs produits technologiques
+                </h2>
+                <a href="#products" class="button is-light is-large mt-4">
+                    <span>Découvrir nos produits</span>
+                    <span class="icon">
+                        <i class="fas fa-arrow-down"></i>
+                    </span>
+                </a>
+            </div>
+        </div>
+    </section>
+
+    
+    <section id="products" class="section">
+        <div class="container">
+            <h2 class="title is-2 has-text-centered section-title">Nos Produits</h2>
+            
+            <div class="filter-tags has-text-centered">
+                <span class="tag is-medium is-primary is-light filter-tag active" data-category="all">
+                    Tous
+                </span>
+                <span class="tag is-medium filter-tag" data-category="smartphone">
+                    Smartphones
+                </span>
+                <span class="tag is-medium filter-tag" data-category="laptop">
+                    Ordinateurs
+                </span>
+                <span class="tag is-medium filter-tag" data-category="accessory">
+                    Accessoires
+                </span>
+            </div>
+
+            
+            <div class="columns is-multiline" id="productsGrid">
+                
+                <div class="column is-one-third" data-category="smartphone">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/smartphonepro.jpg" alt="Smartphone Pro" >
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Smartphone Pro</p>
+                            <p class="subtitle is-6 has-text-grey">Haut de gamme</p>
+                            <div class="content">
+                                <p>
+                                    Smartphone dernier cri avec écran AMOLED 6.7", processeur octa-core, 
+                                    128GB de stockage et appareil photo 108MP.
+                                </p>
+                                <p class="price">899,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="1" data-name="Smartphone Pro" data-price="899">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+               
+                <div class="column is-one-third" data-category="laptop">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/laptop ultra.jpg" alt="Laptop Ultra" >
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Laptop Ultra</p>
+                            <p class="subtitle is-6 has-text-grey">Performance maximale</p>
+                            <div class="content">
+                                <p>
+                                    Ordinateur portable 15.6" avec processeur Intel i7, 16GB RAM, 
+                                    SSD 512GB et carte graphique dédiée.
+                                </p>
+                                <p class="price">1,299,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="2" data-name="Laptop Ultra" data-price="1299">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+                <div class="column is-one-third" data-category="accessory">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/ecouteur.jpg" alt="Écouteurs Wireless" onerror="this.src='https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=400&h=250&fit=crop'">
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Écouteurs Wireless</p>
+                            <p class="subtitle is-6 has-text-grey">Audio premium</p>
+                            <div class="content">
+                                <p>
+                                    Écouteurs Bluetooth avec réduction de bruit active, 
+                                    autonomie 30h et qualité audio Hi-Fi.
+                                </p>
+                                <p class="price">199,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="3" data-name="Écouteurs Wireless" data-price="199">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+            
+                <div class="column is-one-third" data-category="smartphone">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/smartphonestan.jpg" alt="Smartphone Basic" >
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Smartphone Basic</p>
+                            <p class="subtitle is-6 has-text-grey">Entrée de gamme</p>
+                            <div class="content">
+                                <p>
+                                    Smartphone économique avec écran 6.1", processeur quad-core, 
+                                    64GB de stockage et double appareil photo.
+                                </p>
+                                <p class="price">399,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="4" data-name="Smartphone Basic" data-price="399">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+            
+                <div class="column is-one-third" data-category="laptop">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/laptop standar.jpg" >
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Laptop Standard</p>
+                            <p class="subtitle is-6 has-text-grey">Polyvalent</p>
+                            <div class="content">
+                                <p>
+                                    Ordinateur portable 14" avec processeur Intel i5, 8GB RAM, 
+                                    SSD 256GB, idéal pour le travail et les études.
+                                </p>
+                                <p class="price">899,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="5" data-name="Laptop Standard" data-price="899">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+
+      
+                <div class="column is-one-third" data-category="accessory">
+                    <div class="card product-card">
+                        <div class="card-image">
+                            <figure class="image product-image">
+                                <img src="images/smartwatch.jpg" alt="Montre Connectée" >
+                            </figure>
+                        </div>
+                        <div class="card-content">
+                            <p class="title is-5">Montre Connectée</p>
+                            <p class="subtitle is-6 has-text-grey">Fitness & Santé</p>
+                            <div class="content">
+                                <p>
+                                    Montre intelligente avec suivi de la santé, GPS intégré, 
+                                    résistance à l'eau et autonomie 7 jours.
+                                </p>
+                                <p class="price">299,00 TND</p>
+                            </div>
+                        </div>
+                        <footer class="card-footer">
+                            <a class="card-footer-item add-to-cart" data-id="6" data-name="Montre Connectée" data-price="299">
+                                <span class="icon">
+                                    <i class="fas fa-cart-plus"></i>
+                                </span>
+                                <span>Ajouter au panier</span>
+                            </a>
+                        </footer>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+   
+    <section id="about" class="section has-background-light">
+        <div class="container">
+            <div class="columns">
+                <div class="column is-8 is-offset-2">
+                    <h2 class="title is-2 has-text-centered mb-6">À propos de TechStore</h2>
+                    <div class="content is-medium">
+                        <p>
+                            TechStore est votre destination de confiance pour tous vos besoins technologiques. 
+                            Nous proposons une large gamme de produits de qualité, des smartphones aux ordinateurs 
+                            portables en passant par les accessoires high-tech.
+                        </p>
+                        <p>
+                            Notre mission est de rendre la technologie accessible à tous en offrant des produits 
+                            de qualité à des prix compétitifs, avec un service client exceptionnel.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="modal" id="cartModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">
+                    <span class="icon">
+                        <i class="fas fa-shopping-cart"></i>
+                    </span>
+                    <span>Mon Panier</span>
+                </p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <div id="cartItems">
+                    <p class="has-text-centered has-text-grey">Votre panier est vide</p>
+                </div>
+                <div class="summary-box mt-5" id="cartSummary" style="display: none;">
+                    <div class="level">
+                        <div class="level-left">
+                            <div class="level-item">
+                                <strong>Total:</strong>
+                            </div>
+                        </div>
+                        <div class="level-right">
+                            <div class="level-item">
+                                <span class="total-price" id="totalPrice">0,00 TND</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success is-fullwidth" id="checkoutButton" style="display: none;">
+                    <span>Procéder au paiement</span>
+                    <span class="icon">
+                        <i class="fas fa-credit-card"></i>
+                    </span>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+ 
+    <div class="modal" id="checkoutModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head">
+                <p class="modal-card-title">
+                    <span class="icon">
+                        <i class="fas fa-credit-card"></i>
+                    </span>
+                    <span>Informations de paiement</span>
+                </p>
+                <button class="delete" aria-label="close"></button>
+            </header>
+            <section class="modal-card-body">
+                <form id="checkoutForm" class="checkout-form">
+                    <div class="field">
+                        <label class="label">Nom complet</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Votre nom complet" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Email</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="email" placeholder="votre.email@example.com" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-envelope"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Téléphone</label>
+                        <div class="control has-icons-left">
+                            <input class="input" type="tel" placeholder="+216 XX XXX XXX" required>
+                            <span class="icon is-small is-left">
+                                <i class="fas fa-phone"></i>
+                            </span>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Adresse</label>
+                        <div class="control">
+                            <textarea class="textarea" placeholder="Votre adresse complète" rows="3" required></textarea>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Ville</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Votre ville" required>
+                        </div>
+                    </div>
+                    <div class="field">
+                        <label class="label">Code postal</label>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="XXXX" required>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="field">
+                        <label class="label">Méthode de paiement</label>
+                        <div class="control">
+                            <div class="select is-fullwidth">
+                                <select required>
+                                    <option value="">Sélectionner une méthode</option>
+                                    <option value="card">Carte bancaire</option>
+                                    <option value="cash">Paiement à la livraison</option>
+                                    <option value="transfer">Virement bancaire</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="summary-box mt-4">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <strong>Total à payer:</strong>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <span class="total-price" id="checkoutTotal">0,00 TND</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button" id="cancelCheckout">Annuler</button>
+                <button class="button is-success" id="confirmOrder">
+                    <span>Confirmer la commande</span>
+                    <span class="icon">
+                        <i class="fas fa-check"></i>
+                    </span>
+                </button>
+            </footer>
+        </div>
+    </div>
+
+    <div class="modal" id="successModal">
+        <div class="modal-background"></div>
+        <div class="modal-card">
+            <header class="modal-card-head has-background-success">
+                <p class="modal-card-title has-text-white">
+                    <span class="icon">
+                        <i class="fas fa-check-circle"></i>
+                    </span>
+                    <span>Commande confirmée !</span>
+                </p>
+            </header>
+            <section class="modal-card-body has-text-centered">
+                <div class="content">
+                    <p class="is-size-4">Merci pour votre achat !</p>
+                    <p>Votre commande a été enregistrée avec succès. Vous recevrez un email de confirmation sous peu.</p>
+                </div>
+            </section>
+            <footer class="modal-card-foot">
+                <button class="button is-success is-fullwidth" id="closeSuccess">Fermer</button>
+            </footer>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="content has-text-centered">
+            <p>
+                <strong>TechStore</strong> - Votre boutique technologique de confiance
+            </p>
+            <p class="mt-3">
+                &copy; 2024 - Tous droits réservés
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        
+        let cart = [];
+        
+        
+        function loadCart() {
+            const savedCart = localStorage.getItem('cart');
+            if (savedCart) {
+                cart = JSON.parse(savedCart);
+                updateCartUI();
+            }
+        }
+        
+        
+        function saveCart() {
+            localStorage.setItem('cart', JSON.stringify(cart));
+            updateCartUI();
+        }
+        
+     
+        document.querySelectorAll('.add-to-cart').forEach(button => {
+            button.addEventListener('click', function() {
+                const id = this.dataset.id;
+                const name = this.dataset.name;
+                const price = parseFloat(this.dataset.price);
+                
+                const existingItem = cart.find(item => item.id === id);
+                if (existingItem) {
+                    existingItem.quantity++;
+                } else {
+                    cart.push({ id, name, price, quantity: 1 });
+                }
+                
+                saveCart();
+                
+                
+                const notification = document.createElement('div');
+                notification.className = 'notification is-success';
+                notification.style.position = 'fixed';
+                notification.style.top = '80px';
+                notification.style.right = '20px';
+                notification.style.zIndex = '9999';
+                notification.innerHTML = `<button class="delete"></button>Produit ajouté au panier !`;
+                document.body.appendChild(notification);
+                
+                setTimeout(() => notification.remove(), 3000);
+                notification.querySelector('.delete').addEventListener('click', () => notification.remove());
+            });
+        });
+        
+        
+        function updateCartUI() {
+            const cartItems = document.getElementById('cartItems');
+            const cartSummary = document.getElementById('cartSummary');
+            const cartBadge = document.getElementById('cartBadge');
+            const checkoutButton = document.getElementById('checkoutButton');
+            const totalPrice = document.getElementById('totalPrice');
+            
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            const itemCount = cart.reduce((sum, item) => sum + item.quantity, 0);
+            
+            if (cart.length === 0) {
+                cartItems.innerHTML = '<p class="has-text-centered has-text-grey">Votre panier est vide</p>';
+                cartSummary.style.display = 'none';
+                checkoutButton.style.display = 'none';
+                cartBadge.style.display = 'none';
+            } else {
+                cartItems.innerHTML = cart.map(item => `
+                    <div class="cart-item">
+                        <div class="level">
+                            <div class="level-left">
+                                <div class="level-item">
+                                    <strong>${item.name}</strong>
+                                </div>
+                            </div>
+                            <div class="level-right">
+                                <div class="level-item">
+                                    <div class="field has-addons">
+                                        <div class="control">
+                                            <button class="button is-small decrease-quantity" data-id="${item.id}">-</button>
+                                        </div>
+                                        <div class="control">
+                                            <input class="input is-small" type="number" value="${item.quantity}" min="1" style="width: 60px;" readonly>
+                                        </div>
+                                        <div class="control">
+                                            <button class="button is-small increase-quantity" data-id="${item.id}">+</button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="level-item">
+                                    <strong>${(item.price * item.quantity).toFixed(2)} TND</strong>
+                                </div>
+                                <div class="level-item">
+                                    <button class="button is-small is-danger remove-item" data-id="${item.id}">
+                                        <span class="icon">
+                                            <i class="fas fa-trash"></i>
+                                        </span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+                
+                totalPrice.textContent = `${total.toFixed(2)} TND`;
+                cartSummary.style.display = 'block';
+                checkoutButton.style.display = 'block';
+                cartBadge.textContent = itemCount;
+                cartBadge.style.display = 'flex';
+                
+                
+                document.querySelectorAll('.increase-quantity').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const item = cart.find(i => i.id === this.dataset.id);
+                        item.quantity++;
+                        saveCart();
+                    });
+                });
+                
+                document.querySelectorAll('.decrease-quantity').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const item = cart.find(i => i.id === this.dataset.id);
+                        if (item.quantity > 1) {
+                            item.quantity--;
+                        } else {
+                            cart = cart.filter(i => i.id !== this.dataset.id);
+                        }
+                        saveCart();
+                    });
+                });
+                
+                document.querySelectorAll('.remove-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        cart = cart.filter(i => i.id !== this.dataset.id);
+                        saveCart();
+                    });
+                });
+            }
+        }
+        
+        
+        document.querySelectorAll('.filter-tag').forEach(tag => {
+            tag.addEventListener('click', function() {
+                document.querySelectorAll('.filter-tag').forEach(t => {
+                    t.classList.remove('is-primary', 'is-light');
+                });
+                this.classList.add('is-primary', 'is-light');
+                
+                const category = this.dataset.category;
+                document.querySelectorAll('[data-category]').forEach(product => {
+                    if (category === 'all' || product.dataset.category === category) {
+                        product.style.display = 'block';
+                    } else {
+                        product.style.display = 'none';
+                    }
+                });
+            });
+        });
+        
+       
+        const cartModal = document.getElementById('cartModal');
+        const checkoutModal = document.getElementById('checkoutModal');
+        const successModal = document.getElementById('successModal');
+        
+        document.getElementById('cartButton').addEventListener('click', () => {
+            cartModal.classList.add('is-active');
+        });
+        
+        document.getElementById('checkoutButton').addEventListener('click', () => {
+            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+            document.getElementById('checkoutTotal').textContent = `${total.toFixed(2)} TND`;
+            cartModal.classList.remove('is-active');
+            checkoutModal.classList.add('is-active');
+        });
+        
+        document.getElementById('confirmOrder').addEventListener('click', () => {
+            const form = document.getElementById('checkoutForm');
+            if (form.checkValidity()) {
+                checkoutModal.classList.remove('is-active');
+                successModal.classList.add('is-active');
+                cart = [];
+                saveCart();
+            } else {
+                form.reportValidity();
+            }
+        });
+        
+        document.getElementById('cancelCheckout').addEventListener('click', () => {
+            checkoutModal.classList.remove('is-active');
+            cartModal.classList.add('is-active');
+        });
+        
+        document.getElementById('closeSuccess').addEventListener('click', () => {
+            successModal.classList.remove('is-active');
+        });
+        
+        
+        [cartModal, checkoutModal, successModal].forEach(modal => {
+            modal.querySelector('.modal-background').addEventListener('click', () => {
+                modal.classList.remove('is-active');
+            });
+            modal.querySelector('.delete').addEventListener('click', () => {
+                modal.classList.remove('is-active');
+            });
+        });
+        
+        
+        document.addEventListener('DOMContentLoaded', () => {
+            const $navbarBurgers = Array.prototype.slice.call(document.querySelectorAll('.navbar-burger'), 0);
+            
+            if ($navbarBurgers.length > 0) {
+                $navbarBurgers.forEach(el => {
+                    el.addEventListener('click', () => {
+                        const target = el.dataset.target;
+                        const $target = document.getElementById(target);
+                        el.classList.toggle('is-active');
+                        $target.classList.toggle('is-active');
+                    });
+                });
+            }
+        });
+        
+        
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+        
+        
+        loadCart();
+    </script>
+</body>
+</html>
+
